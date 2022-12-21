@@ -1,0 +1,667 @@
+#app-container * {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+  }
+
+#big-app-container {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 5rem;
+  }
+
+/* The Modal (background) */
+.modal {
+  background: #007ACE;
+  border-radius: 0.5em;
+  box-shadow: 0 10px 20px rgba(black, 0.2);
+  left: 50%;
+  max-width: 90%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: left;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  }
+
+.modal-footer {
+  margin: auto;
+  text-align: center;
+}
+  .modal-close {
+    align-items: center;
+    color: #111827;
+    display: flex;
+    height: 4.5em;
+    justify-content: center;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4.5em;
+  }
+body {
+    font-family: "Open Sans", sans-serif;
+    background-color: #061E44;
+    color: #f3f5f4;
+    width: 100%;
+    height: 100vh;
+    max-width: 100% !important;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+h6 {
+    margin-top: 0;
+}
+
+
+.app__header {
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+}
+
+.app__header__title {
+    letter-spacing: 0.23rem;
+}
+
+.app__header__title--grey {
+    color: #C4CDD5;
+}
+
+.app__menu__img {
+    height: 50px;
+    width: auto;
+    margin-top:20px;
+}
+
+.check__img {
+  height: 30px;
+  width: auto;
+  margin-bottom:0px;
+  margin-left: 5.7rem;
+}
+
+.app__content {
+    display: flex;
+    margin-top: 20px;
+}
+
+.wind__speed__container {
+    display: flex;
+    flex-direction: column;
+    background-color: #082255;
+    border-radius: 0.55rem;
+}
+
+.graph__title {
+    color: #fff !important;
+    letter-spacing: 0.3rem !important;
+    padding: 25px 25px 0px 25px;
+    margin-bottom: 0px !important;
+    font-size: 1em;
+}
+
+.slider {
+    padding: 15px;
+}
+
+.auto__checkbox {
+    margin-right: 0px;
+}
+
+.auto__label {
+    color: #DFE3E8;
+}
+
+.auto__container {
+    display: flex;
+    justify-content: space-between;
+    color: #DFE3E8;
+    padding: 0px 15px;
+}
+
+.auto__p {
+    margin-bottom: 0;
+}
+
+.graph__container {
+    background-color: #082255;
+    border-radius: 0.55rem;
+    
+}
+
+.first {
+    margin-bottom: 0px;
+}
+
+.second {
+    margin-top: 5px;
+}
+
+.histogram__direction {
+    margin-left: 10px;
+}
+
+
+.dash-spinner.dash-default-spinner {
+  width: 100%;
+  
+  text-align: bottom;
+  font-size: 30px;
+}
+
+.dash-default-spinner-rect1,
+.dash-default-spinner-rect2,
+.dash-default-spinner-rect3,
+.dash-default-spinner-rect4,
+.dash-default-spinner-rect5{
+  background-color: #007ACE !important;
+  margin-top:20px;
+  height: 5vh !important;
+  width: 1vh !important;
+  display: inline-block !important;
+}
+
+/* Container
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+#app-container-2 {
+    background: #082255;
+    max-width: 100%;
+    width: 100%;
+    height: calc(100vh - 32rem);
+  }
+  
+#app-content {
+    display:flex;
+    background: inherit;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+
+  
+#status-container {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+  }
+  
+
+/*Dropdown*/
+.setting-input {
+    width: 100% !important;
+    height: 100%;
+  }
+  
+.react-numeric-input, .react-numeric-input input {
+    width: 100% !important;
+  }
+  
+.react-numeric-input input {
+    background-color: #007ACE !important;
+    border-color: white !important;
+    color: white !important;
+  }
+  
+.react-numeric-input b:nth-child(2) i {
+    border-color: transparent transparent white !important;
+  }
+  
+.react-numeric-input b:nth-child(3) i {
+    border-color: white transparent transparent !important;
+}
+
+/* Dropdown
+----------------------------------------------*/
+
+/*Dropdown items*/
+.Select-control, .Select-multi-value-wrapper, .Select-menu-outer div {
+background-color: #007ACE;
+}
+
+/*Dropdown items*/
+.Select-control, .Select, .Select-value-label, .Select-clear-zone {
+color: white;
+}
+
+
+/*Dropdown items*/
+.Select-menu-outer {
+background-color: #007ACE;
+border: 1px solid #082255 !important;
+}
+
+/*Dropdown items*/
+.Select-menu-outer div:hover {
+background-color: #007ACE !important;
+cursor: pointer;
+}
+
+/*Dropdown arrow + delete button*/
+.Select-control, .Select-control > span {
+color: white;
+background: #007ACE !important;
+}
+
+/*Placeholder*/
+.Select.has-value.Select--single > .Select-control .Select-value .Select-value-label, .Select.has-value.is-pseudo-focused.Select--single > .Select-control .Select-value .Select-value-label {
+color: white !important;
+}
+
+/*Placeholder*/
+.Select--single > .Select-control .Select-value, .Select-placeholder {
+/*border: 1px solid darkgray;*/
+border-radius: 4px;
+background-color: #007ACE;
+cursor: pointer;
+}
+  
+  
+.Select.is-focused:not(.is-open) > .Select-control {
+    border-color: #082255 !important;
+  }
+
+
+#wind-direction {
+    display: flex;
+    justify-content: center;
+}
+
+#value-setter-panel {
+    line-height: 2;
+    margin-right:0px;
+  }
+
+#top-section-container {
+    height: 40rem;
+    flex-direction: row;
+    display: flex;
+    max-width: 100%;
+    /*width: 100%;*/
+  }
+#metric_header > div {
+    font-weight: bold;
+    font-size: 1.35rem;
+    line-height: 3rem;
+  }
+
+#metric_header-2 > div {
+    font-weight: bold;
+    font-size: 1.35rem;
+    line-height: 3rem;
+  }
+  
+#m_header_5 {
+    margin-top: 0rem !important;
+  }
+#cluster_header > div {
+  font-weight: bold;
+  font-size: 1.35rem;
+  line-height: 3rem;
+}
+/* Tab1 content
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+#set-specs-intro-container {
+    font-weight: bold;
+    margin: 3rem 0rem 1rem;
+    font-size: 1.6rem;
+    color:rgb(255, 255, 255);
+  }
+
+#value-setter-panel-header {
+font-weight: bold;
+color: rgb(255, 255, 255);
+line-height: 1;
+padding: 2rem 0;
+border-bottom: 1px solid #007ACE;
+}
+
+#value-setter-panel-header > div {
+text-align: right;
+}
+
+
+#value-setter-view-btn, #value-setter-set-btn, #set-export-cluster-combine-btn, #accounts-gs-set-btn, #accounts-gs-clust-set-btn {
+border: 1px solid #007ACE;
+color: rgb(255, 255, 255);
+}
+
+#value-setter-set-btn:hover, #value-setter-view-btn:hover, #set-export-cluster-combine-btn:hover, #accounts-gs-set-btn:hover, #accounts-gs-clust-set-btn:hover {
+color: #007ACE;
+border-color: white;
+}
+
+#value-setter-panel-usl, #value-setter-panel-lsl, #value-setter-panel-ucl, #value-setter-panel-lcl {
+padding: 1rem 0;
+color: white;
+}
+
+.output-datatable {
+    margin: 2rem 0rem 2rem 2rem;
+    line-height: 3;
+    align-self: flex-end;
+    width: 80%;
+  }
+
+
+  .rc-slider-track {
+    background-color: #007ACE;
+  }
+  
+  .rc-slider-dot-active {  
+    border-color: #007ACE;
+    border: solid 2px #007ACE;
+  }
+  
+  .rc-slider-handle {
+    background-color: #007ACE;
+    border-color: #007ACE;
+  }
+  
+  .rc-slider-handle:hover {
+    border-color: #007ACE;
+  }
+  
+  .rc-slider-handle-active:active {
+    border-color: #007ACE;
+  }
+
+  .rc-slider-rail {
+    background-color: #007ACE;
+    border-color: #007ACE;
+  }
+
+  .rc-slider-tooltip-inner {
+    background-color: #007ACE;
+  }
+
+#value-setter-view-btn-2, #value-setter-set-btn-2 {
+  border: 1px solid #007ACE;
+  color: rgb(255, 255, 255);
+  margin-left:10px;
+  }
+  
+  #value-setter-set-btn-2:hover, #value-setter-view-btn-2:hover {
+  color: #007ACE;
+  border-color: white;
+  }
+
+#value-setter-view-btn-3, #value-setter-set-btn-3 {
+  border: 1px solid #007ACE;
+  color: rgb(255, 255, 255);
+  margin-left:10px;
+  margin-top:30px;
+  }
+  
+  #value-setter-set-btn-3:hover, #value-setter-view-btn-3:hover {
+  color: #007ACE;
+  border-color: white;
+  }
+
+  #account-select-view-btn, #account-select-set-btn {
+  border: 1px solid #007ACE;
+  color: rgb(255, 255, 255);
+  margin-left:10px;
+  margin-top:30px;
+  margin-right:10px
+  }
+  
+ #account-select-set-btn:hover, #account-select-view-btn:hover {
+  color: #007ACE;
+  border-color: white;
+  }
+
+@media only screen and (max-width: 600px) {
+    .histogram__direction {
+        margin: 15px 0px 20px 0px;
+    }
+    .app__content {
+        display: block;
+        margin: 15px 0px 0px 0px;
+    }    
+    .app__menu__img {
+        height: 120px;
+        width: auto;
+    }
+    
+    .app__header {
+        display: flex;
+        flex-direction: column;
+    }
+    .app__header__desc {
+        order: 1;
+        text-align: center;
+    }
+    .app__header__logo {
+        order: 0;
+    }
+    .app__header__title {
+        font-size: 1.5em;
+        padding-top: 15px;
+    }
+    #app-container {
+        height: auto;
+      }
+    
+      #set-specs-intro-container {
+        margin: 4rem 2rem 0rem 2rem;
+        font-size: inherit;
+      }
+    
+      #settings-menu {
+        margin: 2rem;
+        flex-direction: column;
+      }
+    
+      #settings-menu > div {
+        width: 100%;
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        flex-basis: auto;
+        margin: 2rem 0rem;
+      }
+    
+      #value-setter-panel-header {
+        display: none;
+      }
+    
+      #button-div {
+        display: block;
+        text-align: center;
+      }
+    
+      #button-div button {
+        margin: 1rem auto;
+        display: block;
+      }
+    
+      .output-datatable {
+        align-self: center;
+        margin: 2rem;
+      }
+}
+
+#metric-select-menu {
+    flex: 1 1 0;
+    color: white;
+  }
+
+
+
+#tabs {
+    width: 100%;
+  }
+  
+  .custom-tabs {
+    background-color: #061E44;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 14px;
+    height: fit-content;
+    cursor: pointer;
+  }
+  
+  #Specs-tab.custom-tab, #Control-chart-tab.custom-tab, #Account-analyze-tab.custom-tab {
+    background-color: #082255;
+    letter-spacing: 1px;
+    color: #fff !important;
+    letter-spacing: 0.3rem !important;
+    font-size: 1em;
+    border: 0;
+    border-bottom: #061E44 solid 4px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 18px;
+  }
+  
+  #Specs-tab.custom-tab--selected, #Control-chart-tab.custom-tab--selected, #Account-analyze-tab.custom-tab--selected {
+    border-bottom: #007ACE solid 4px !important;
+  }
+  
+ 
+
+  #Specs-tab.custom-tab {
+    margin-right: 3px;
+  }
+  
+  #Control-chart-tab.custom-tab {
+    margin-left: 3px;
+  }
+
+  #Account-analyze-tab.custom-tab {
+    margin-left: 3px;
+  }
+  
+  .section-banner {
+    color: darkgray;
+    font-size: 1.5rem;
+    text-align: left;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #fcfdff;
+  }
+
+@media screen and (max-width: 800px) {
+    #Specs-tab.custom-tab {
+        margin-right: 0;
+    }
+
+    #Control-chart-tab.custom-tab {
+        margin-left: 0;
+    }
+
+    #Account-analyze-tab.custom-tab {
+      margin-left: 0;
+  }
+}
+
+.metric-row {
+  font-size: 1.3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center; /* vertical center row items*/
+}
+
+.cluster-row {
+  font-size: 1.3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center; /* vertical center row items*/
+}
+
+#metric-rows {
+  overflow-y: scroll;
+  width: 100%;
+  height: 46rem;
+}
+
+#account-rows {
+  overflow-y: scroll;
+  width: 100%;
+  height: 62rem;
+}
+
+#metric-rows-2 {
+  overflow-y: scroll;
+  width: 100%;
+  height: 43rem;
+}
+
+#result-analyse-gs-clust {
+overflow-y: scroll;
+  width: 100%;
+  height: 23rem;
+}
+
+.metric-row:hover {
+  background-color: #061E44;
+}
+
+.cluster-row:hover {
+  background-color: #061E44;
+}
+
+.right-btn-display {
+  display: flex;
+  flex-direction: row;
+  margin-left: 1rem;
+}
+
+input[type="checkbox"] {
+  
+  accent-color: #007ACE;
+  }
+
+td.CalendarDay {
+  padding: 0;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  display: flex;
+  background: #007ACE;
+  border-color: #fff;
+  color:#fff;
+  opacity: 1; /* Firefox */
+}
+
+.DateRangePickerInput {
+  background-color: #007ACE;
+  display: inline-block;
+}
+
+.DateRangePickerInput_arrow_svg {
+  vertical-align: middle;
+  fill: #fff;
+  height: 24px;
+  width: 24px;
+}
+
+input[type="email"], input[type="number"], input[type="search"], input[type="text"], input[type="tel"], input[type="url"], input[type="password"], textarea, select {
+  height: 38px;
+  padding: 6px 10px;
+  background-color: #007ACE;
+  border: 0px;
+  border-radius: 0px;
+  box-shadow: none;
+  font-family: inherit;
+  font-size: inherit;
+  color:#fff;
+  justify-items: center;
+}
