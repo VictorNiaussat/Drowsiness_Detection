@@ -1,5 +1,4 @@
 import numpy as np
-from PIL import Image
 import pandas as pd
 import cv2
 from datetime import timedelta

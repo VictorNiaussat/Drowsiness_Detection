@@ -8,11 +8,11 @@ from time import strftime, localtime
 date = strftime('%Y-%m-%d-%H-%M-%S', localtime())
 
 
-batch_size = 32
-nb_epochs = 20
-input_size=299
-nb_epochs=10
-nb_couches_rentrainement=4
+batch_size = "32"
+nb_epochs = "20"
+input_size="299"
+nb_epochs="10"
+nb_couches_rentrainement="4"
 
 
 role_arn = "arn:aws:iam::266875515584:role/sagemaker-execution-role"
@@ -66,7 +66,12 @@ if __name__=='__main__':
                                 ResourceConfig={
                                     'InstanceType': training_instance_type,
                                     'InstanceCount': 1,
+                                    "VolumeSizeInGB":25,
+                                    
                                 },
+                                StoppingCondition={
+                                                    'MaxRuntimeInSeconds': 36000
+                                                },
                                 TensorBoardOutputConfig={
                                     'S3OutputPath': 'https://drowsiness-detection-bucket.s3.eu-west-1.amazonaws.com/logs/'
                                 },
@@ -76,7 +81,7 @@ if __name__=='__main__':
                             )
     
     print(response)
-    
+    """
     response = sm_client.create_model(
                         ModelName=model_name,
                         PrimaryContainer={
@@ -104,4 +109,4 @@ if __name__=='__main__':
                                     },]
                             )
     
-    print(response)
+    print(response)"""
