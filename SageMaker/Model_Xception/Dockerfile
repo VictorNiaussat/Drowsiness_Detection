@@ -2,11 +2,12 @@ FROM tensorflow/tensorflow:latest-gpu
 
 ENV PYTHONUNBUFFERED=True
 
-ENV CLOUD_PATH="/opt/ml/code"
+ENV CLOUD_PATH="/opt/ml/program"
 
 COPY code/ $CLOUD_PATH
 
-RUN pip install -r /opt/ml/code/requirements.txt
+RUN pip install -r /opt/ml/program/requirements.txt
+
 
 # make the entrypoint script executable
 RUN chmod +x $CLOUD_PATH/entrypoint.sh
