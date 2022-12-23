@@ -15,20 +15,20 @@ nb_epochs="10"
 nb_couches_rentrainement="4"
 
 
-role_arn = "arn:aws:iam::266875515584:role/sagemaker-execution-role"
+role_arn = "arn:aws:iam::266875515584:role/sagemaker-execution-role" #Droit sagemaker s3
 
 data_name = "state-farm-distracted-driver-detection.zip"
-data_s3_url = f"s3://drowsiness-detection-bucket/data-kaggle/{data_name}"
+data_s3_url = f"s3://drowsiness-detection-bucket/data-kaggle/{data_name}" #lien 
 training_job_name = f"xception-training-{date}"
-training_image_uri = "266875515584.dkr.ecr.eu-west-1.amazonaws.com/training-xception:latest"
-training_instance_type =  "ml.m4.xlarge"
+training_image_uri = "266875515584.dkr.ecr.eu-west-1.amazonaws.com/training-xception:latest" #lien vers docker : 
+training_instance_type =  "ml.m4.xlarge" #instance entrainement
 
 model_name = f'xception-model-{date}'
-model_data_url = f"s3://drowsiness-detection-bucket/models/{training_job_name}/output/model.tar.gz"
+model_data_url = f"s3://drowsiness-detection-bucket/models/{training_job_name}/output/model.tar.gz" #endroit où stock poids
 inference_image_url = training_image_uri
 
 
-config_endpoint_name = f'xception-inference-endpoint-config-{date}'
+config_endpoint_name = f'xception-inference-endpoint-config-{date}' #endpoint : serveur où model est conserver -- message avec flask
 config_endpoint_instance_type = "ml.m4.xlarge"
 
 
@@ -66,6 +66,7 @@ if __name__=='__main__':
                                 ResourceConfig={
                                     'InstanceType': training_instance_type,
                                     'InstanceCount': 1,
+
                                     "VolumeSizeInGB":25,
                                     
                                 },
