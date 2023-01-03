@@ -8,8 +8,6 @@ RUN pip install -r /requirements.txt
 
 COPY . $CLOUD_PATH
 
-
-
 # make the entrypoint script executable
 RUN chmod +x $CLOUD_PATH/entrypoint.sh
 
