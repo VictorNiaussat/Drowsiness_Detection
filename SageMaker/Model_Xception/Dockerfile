@@ -12,4 +12,4 @@ COPY . $CLOUD_PATH
 RUN chmod +x $CLOUD_PATH/entrypoint.sh
 
 WORKDIR $CLOUD_PATH
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
