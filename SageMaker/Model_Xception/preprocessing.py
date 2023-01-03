@@ -30,7 +30,7 @@ def preprocessing_data(config_training):
     input_size = (config_training.model_params['input_size'],config_training.model_params['input_size'])
     train_datagen = ImageDataGenerator(validation_split=0.2)
 
-    train_data = os.path.join(config_training.training_directory, '/imgs/train')
+    train_data = os.path.join(config_training.training_directory, 'imgs/train')
     train_generator = train_datagen.flow_from_directory(
             train_data,
             target_size=input_size,
