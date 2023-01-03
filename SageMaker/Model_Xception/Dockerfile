@@ -2,9 +2,11 @@ FROM tensorflow/tensorflow:latest-gpu
 
 ENV PYTHONUNBUFFERED=True
 
-ENV CLOUD_PATH="/opt/ml/program"
+ENV CLOUD_PATH="/opt/ml/code"
 
-COPY code/ $CLOUD_PATH
+RUN pip install -r /requirements.txt
+
+COPY . $CLOUD_PATH
 
 RUN pip install -r /opt/ml/program/requirements.txt
 
