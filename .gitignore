@@ -2,3 +2,5 @@ Trash/
 Smart_Diagnosis_Deep_Learning_Boosted_Driver_Inattention_Detection_and_Abnormal_Driving_Prediction.pdf
 Data/
 Dashboard\app_ex.py
+push_docker_profile.txt
+SageMaker/run_training/create_job_sm_ubuntu.py
