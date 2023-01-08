@@ -4,3 +4,5 @@ Data/
 Dashboard\app_ex.py
 push_docker_profile.txt
 SageMaker/run_training/create_job_sm_ubuntu.py
+.idea/modules.xml
+.idea/Drowsiness_Detection.iml
