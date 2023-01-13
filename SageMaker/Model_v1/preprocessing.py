@@ -4,24 +4,41 @@ import cv2
 from datetime import timedelta
 
 
-"""distracted_driving_labels = ['Normal Forward Driving',
-                              'Drinking',
-                              'Phone Call(right)',
-                              'Phone Call(left)',
-                              'Eating',
-                              'Text (Right)',
-                              'Text (Left)',
-                              'Hair / makeup',
-                              'Reaching behind',
-                              'Adjust control panel',
-                              'Pick up from floor (Driver)',
-                              'Pick up from floor (Passenger)',
-                              'Talk to passenger at the right',
-                              'Talk to passenger at backseat',
-                              'Yawning',
-                              'Hand on head',
-                              'Singing with music',
-                              'Shaking or dancing with music']"""
+"""distracted_driving_labels = ['Normal Forward Driving', 0 
+                              'Drinking', 6 
+                              'Phone Call(right)', 2 
+                              'Phone Call(left)', 4 
+                              'Eating', 6 
+                              'Text (Right)', 1 
+                              'Text (Left)', 3
+                              'Hair / makeup',  8 
+                              'Reaching behind', 7 
+                              'Adjust control panel', 5 
+                              'Pick up from floor (Driver)', 5 
+                              'Pick up from floor (Passenger)', 5 
+                              'Talk to passenger at the right', 9 
+                              'Talk to passenger at backseat', 9 
+                              'Yawning', 0 
+                              'Hand on head',   0 
+                              'Singing with music', 0 
+                              'Shaking or dancing with music' 0 ]"""
+
+"""
+activity_map = {
+    'c0': 'Safe driving', 
+    'c1': 'Texting - right', 
+    'c2': 'Talking on the phone - right', 
+    'c3': 'Texting - left', 
+    'c4': 'Talking on the phone - left', 
+    'c5': 'Operating the radio', 
+    'c6': 'Drinking', 
+    'c7': 'Reaching behind', 
+    'c8': 'Hair and makeup', 
+    'c9': 'Talking to passenger'
+}
+"""
+
+
 
 def annotate_video_frames(path_video,path_csv,cameraView = ' Dashboard',appearanceBlock = 'None',freq=30):
   """
@@ -36,11 +53,32 @@ def annotate_video_frames(path_video,path_csv,cameraView = ' Dashboard',appearan
   @param appearanceBlock: String pour savoir quelle partie du CSV lire --> 'None' ou 'Sunglass'
   @param freq: nombre de frames avnt d'extraire une nouvelle image
 
-  @return: (np-array of images, np-array of annotations) 
+  @return: (images (np-array) ,annotations (np-array of int) )
   ->un tableau avec les annotations des images correspondantes dans l'ordre.
   @raise keyError: si freq<=0
 """
   assert freq>0 , f'Fréquence ne peut pas être nulle ou négative : {freq}'
+
+  distracted_driving_to_map = {
+    0 : 0,
+    1 : 6,
+    2 : 2,
+    3 : 4,
+    4 : 6,
+    5 : 1,
+    6 : 3,
+    7 : 8,
+    8 : 7,
+    9 : 5,
+    10:5,
+    11:5,
+    12:9,
+    13:9,
+    14:0,
+    15:0,
+    16:0,
+    17:0
+  }
 
   labels = pd.read_csv(path_csv)
   cap=cv2.VideoCapture(path_video)
@@ -67,7 +105,7 @@ def annotate_video_frames(path_video,path_csv,cameraView = ' Dashboard',appearan
         annotations.append(0)   # pas d'annotations donc conduite non perturbée
       else:
         try : 
-          annotations.append(int(current_label["Label/Class ID"])) # Ajoute la classe sous forme d'entier
+          annotations.append(distracted_driving_to_map[int(current_label["Label/Class ID"])]) # Ajoute la classe sous forme d'entier
         except:
           annotations.append(0)  # dans le cas ou le CSV avait un Nan
   return np.array(images),np.array(annotations)
