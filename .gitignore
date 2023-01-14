@@ -8,3 +8,5 @@ SageMaker/run_training/create_job_sm_ubuntu.py
 .idea/Drowsiness_Detection.iml
 .idea/misc.xml
 .idea/vcs.xml
+Data/
+Training

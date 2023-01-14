@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   }
-
+  
 .modal-footer {
   margin: auto;
   text-align: center;
@@ -73,7 +73,7 @@ h6 {
 }
 
 .app__menu__img {
-    height: 50px;
+    height: 150px;
     width: auto;
     margin-top:20px;
 }
@@ -333,12 +333,12 @@ text-align: right;
 }
 
 
-#value-setter-view-btn, #value-setter-set-btn, #set-export-cluster-combine-btn, #accounts-gs-set-btn, #accounts-gs-clust-set-btn {
+#value-setter-view-btn, #value-setter-set-btn, #set-export-cluster-combine-btn, #accounts-gs-set-btn, #accounts-gs-clust-set-btn, #visu-setter-set-btn {
 border: 1px solid #007ACE;
 color: rgb(255, 255, 255);
 }
 
-#value-setter-set-btn:hover, #value-setter-view-btn:hover, #set-export-cluster-combine-btn:hover, #accounts-gs-set-btn:hover, #accounts-gs-clust-set-btn:hover {
+#value-setter-set-btn:hover, #value-setter-view-btn:hover, #set-export-cluster-combine-btn:hover, #accounts-gs-set-btn:hover, #accounts-gs-clust-set-btn:hover, #visu-setter-set-btn:hover {
 color: #007ACE;
 border-color: white;
 }
@@ -514,7 +514,7 @@ color: white;
     cursor: pointer;
   }
   
-  #Specs-tab.custom-tab, #Control-chart-tab.custom-tab, #Account-analyze-tab.custom-tab {
+  #analyse-model-tab.custom-tab, #analyse-video-tab.custom-tab, #real-time-video-tab.custom-tab {
     background-color: #082255;
     letter-spacing: 1px;
     color: #fff !important;
@@ -631,8 +631,50 @@ input[type="checkbox"] {
 
 td.CalendarDay {
   padding: 0;
+  color: white;
+  background-color: #007ACE;
+  border-color: #061E44;
 }
 
+.CalendarMonth {
+  background-color:#061E44;
+}
+.CalendarMonth_caption {
+  color: white;
+}
+.DayPicker {
+  color: green;
+  background-color: #061E44;
+}
+.DayPicker_weekHeader {
+  color: white;
+}
+.DayPickerNavigation_svg__horizontal {
+  height: 19px;
+  width: 19px;
+  fill: white;
+  display: block;
+}
+.DayPickerNavigation_button__default {
+  border: 1px solid #e4e7e7;
+  background-color: #061E44;
+  color: #757575;
+}
+
+.CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover {
+  background: #082255;
+  border: 1px double #082255;
+  color: #fff;
+}
+.CalendarDay__selected_span {
+  background: #082255;
+  border: 1px double #082255;
+  color: #fff;
+}
+
+.CalendarMonthGrid {
+  background: #061E44;
+}
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
   display: flex;
   background: #007ACE;

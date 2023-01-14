@@ -84,7 +84,7 @@
   .two-third-extand.column        { width : 69.3333333333  }
   .three-thirds.column            { width: 96.6666666667%; }
   .full.column                    { width: 100%            }
-  .one-half.column                { width: 48%; }
+  .one-half.column                { width: 50%; }
 
   /* Offsets */
   .offset-by-one.column,

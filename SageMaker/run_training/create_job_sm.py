@@ -6,7 +6,7 @@ import boto3
 batch_size = "32"
 nb_epochs = "20"
 input_size="299"
-nb_epochs="10"
+nb_epochs="20"
 nb_couches_rentrainement="4"
 
 
