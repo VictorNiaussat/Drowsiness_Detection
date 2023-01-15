@@ -108,9 +108,9 @@ def make_predictions(model_path:str, specs:dict):
     m = load_model(model_path, specs)
     train_datagen = ImageDataGenerator(validation_split=0.2)
     val_generator = train_datagen.flow_from_directory(
-            os.path.join('/home/jjean/Documents/GitHub/Drowsiness_Detection/Data/state-farm', 'imgs/train'),
+            os.path.join(os.getcwd(), 'Data/state-farm', 'imgs/train'),
             target_size=(specs['input_size'], specs['input_size']),
-            batch_size=1,
+            batch_size=32,
             shuffle=False,
             class_mode='categorical',
             subset='validation')
@@ -206,6 +206,11 @@ def generate_graph_analyse_model(df_tensorboard:pd.DataFrame, df_predictions:pd.
     return fig_epoch_accuracy, fig_epoch_loss, fig_confusion_matrix, fig_roc
 
 def generate_graph_empty():
+    """Renvoie un objet Figure sans données.
+
+    Returns:
+        go.Figure: Figure vide.
+    """
     layout = {
             "xaxis": {
                 "visible": False
