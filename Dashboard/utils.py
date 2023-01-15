@@ -19,6 +19,10 @@ from SageMaker.Model_Xception.modelClass import model
 from sklearn.preprocessing import LabelBinarizer
 import plotly.figure_factory as ff
 from ast import literal_eval
+import glob
+import cv2
+from datetime import timedelta
+
 
 activity_map = {
     'c0': 'Safe driving', 
@@ -88,38 +92,63 @@ def load_model(model_path:str, specs:dict): #Utiliser specs rentrée par l'utili
     Returns:
         model: Modèle Tensorflow avec les poids chargés.
     """
-    m = model(specs['nb_classes'], specs['nb_couches_rentrainement'], specs['input_size'])
+    m = model(specs['nb_classes'], specs['nb_couches_rentrainement'], (specs['input_size'], specs['input_size']))
     m.load_weights(os.path.join(model_path, 'output', 'model_weights.h5'))
     return m
 
 
 
-def make_predictions(model_path:str, specs:dict):
+def make_predictions(model_path:str, specs:dict, generator=None):
     """Fait les prédictions du modèle dont les poids sont stockées dans le dossier au chemin d'accès model_path
         avec les paramètres specs en utilisant les données de validation de l'entrainement du modèle.
 
     Args:
         model_path (str): Chemin d'accès où sont stockés tous les fichiers du modèle.
         specs (dict): Dictionnaire des paramètres du modèle.
+        generator (Iterator): Gnérateur avec un array image et le timestamp lié à la frame dans la vidéo.
 
     Returns:
         path: Chemin d'accès vers le csv contenant les prédictions des images de validation.
     """
+    print(model_path)
     m = load_model(model_path, specs)
-    train_datagen = ImageDataGenerator(validation_split=0.2)
-    val_generator = train_datagen.flow_from_directory(
-            os.path.join(os.getcwd(), 'Data/state-farm', 'imgs/train'),
-            target_size=(specs['input_size'], specs['input_size']),
-            batch_size=32,
-            shuffle=False,
-            class_mode='categorical',
-            subset='validation')
-    
-    y_pred = m.predict_generator(val_generator, steps=len(val_generator.filenames))
-    df = pd.DataFrame(dict(filename=val_generator.filenames, classe=val_generator.classes, prediction=list(y_pred)))
-    path = os.path.join(model_path, 'predictions.csv')
-    df.to_csv(path)
-    return path
+    if generator is None:
+        train_datagen = ImageDataGenerator(validation_split=0.2)
+        val_generator = train_datagen.flow_from_directory(
+                os.path.join(os.getcwd(), 'Data/state-farm', 'imgs/train'),
+                target_size=(specs['input_size'], specs['input_size']),
+                batch_size=32,
+                shuffle=False,
+                class_mode='categorical',
+                subset='validation')
+        
+        y_pred = m.predict(val_generator, steps=len(val_generator.filenames))
+        df = pd.DataFrame(dict(filename=val_generator.filenames, classe=val_generator.classes, prediction=list(y_pred)))
+        path = os.path.join(model_path, 'predictions.csv')
+        df.to_csv(path)
+        return path
+    else:
+        preds = []
+        times = []
+        i=0
+        for img, timestamp in generator:
+            preds.append(np.argmax(m.predict(img.reshape(1,224,224,3), verbose=0)))
+            times.append(timestamp)
+        T_max = 60 * times[-1].minute<+ times[-1].time().second
+        N = len(times) #n_b mesures classes
+        T = np.linspace(0,T_max,N)
+
+        alpha = 10 #Exigence 
+        score_map = 1/10*alpha*np.array([-2,5,7,5,7,1,3,6,6,5])
+
+        penalite = score_map[preds]
+        Score = np.zeros(N)
+        for i in range(1,N):
+            Score[i] = max(min((i*Score[i-1]+penalite[i])/(i+1),1),0)
+        df = pd.DataFrame(dict(score=Score), index=[t.to_datetime64()for t in times])
+        df['t']= [0] + [int((df.index.tolist()[i] - df.index.tolist()[0]).total_seconds()) for i in range(1, len(df))]
+        return df
+
 
 def load_tensoboard_data(model_path:str):
     """Renvoie le DataFrame des données tensorboard à partir du chemin d'accès vers les fichiors du modèle.
@@ -136,6 +165,10 @@ def load_tensoboard_data(model_path:str):
     df_tensorboard = logs_tensorboard_to_dataframe(config['tensoboard-dev-id'])
     return df_tensorboard
 
+def load_video_path():
+    path = os.path.join(os.getcwd(), 'Data','*.MP4')
+    files = glob.glob(path)
+    return [f.split('/')[-1] for f in files]
 
 def generate_graph_analyse_model(df_tensorboard:pd.DataFrame, df_predictions:pd.DataFrame):
     """Génère les graphes d'analyse du modèle à partir des données stockés dans des DataFrames.
@@ -237,3 +270,39 @@ def generate_graph_empty():
     fig.update_yaxes(showgrid=False)
     fig.update_xaxes(showgrid=False)
     return fig
+
+
+
+def generate_graph_score(df_score:pd.DataFrame):
+    layout=dict(
+                plot_bgcolor=app_color["graph_bg"],
+                paper_bgcolor=app_color["graph_bg"],
+                font_color="white",
+            )
+    colors = [app_color["graph_line"], "#EBF5FA", "#2E5266", "#BD9391"]
+    df_score.reset_index(inplace=True)
+    fig = px.line(df_score, y= 'score', x='t', color_discrete_sequence=colors)
+    fig.update_layout(layout)
+    return fig
+
+
+
+def generator_from_video(video_path, interval):
+    assert interval>0 , f'Fréquence ne peut pas être nulle ou négative : {interval}'
+
+
+    cap=cv2.VideoCapture(video_path)
+
+    n_frames= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    n_fps = int(cap.get(cv2.CAP_PROP_FPS))
+    print(video_path)
+    for i in range(int(n_frames//(n_fps*interval))):
+
+        cap.set(cv2.CAP_PROP_POS_FRAMES, i*n_fps*interval)
+        ret,img=cap.read()
+        image = cv2.resize(cv2.cvtColor(img[: 960:-1], cv2.COLOR_RGB2GRAY),(224,224))
+        if ret==False:
+            break
+        sec = i*interval  # nombre de secondes écoulées à cette frame
+
+        yield np.stack((image,)*3, axis=-1), pd.to_datetime('00:00:00')+timedelta(seconds=sec)

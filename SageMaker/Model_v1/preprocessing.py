@@ -91,6 +91,7 @@ def annotate_video_frames(path_video,path_csv,cameraView = ' Dashboard',appearan
   images = []
   for frame in range(n_frames):
     if frame%freq==0:
+      cap.set(cv2.CAP_PROP_POS_FRAMES, frame)
       ret,img=cap.read()
       if ret==False:
         break

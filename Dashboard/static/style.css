@@ -333,12 +333,12 @@ text-align: right;
 }
 
 
-#value-setter-view-btn, #value-setter-set-btn, #set-export-cluster-combine-btn, #accounts-gs-set-btn, #accounts-gs-clust-set-btn, #visu-setter-set-btn {
+#value-setter-view-btn, #value-setter-set-btn, #set-export-cluster-combine-btn, #accounts-gs-set-btn, #video-predict-set-btn, #visu-setter-set-btn {
 border: 1px solid #007ACE;
 color: rgb(255, 255, 255);
 }
 
-#value-setter-set-btn:hover, #value-setter-view-btn:hover, #set-export-cluster-combine-btn:hover, #accounts-gs-set-btn:hover, #accounts-gs-clust-set-btn:hover, #visu-setter-set-btn:hover {
+#value-setter-set-btn:hover, #value-setter-view-btn:hover, #set-export-cluster-combine-btn:hover, #accounts-gs-set-btn:hover, #video-predict-set-btn:hover, #visu-setter-set-btn:hover {
 color: #007ACE;
 border-color: white;
 }
