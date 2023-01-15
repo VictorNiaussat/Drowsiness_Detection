@@ -1,0 +1,15 @@
+boto3==1.26.28
+dash==2.3.1
+dash_bootstrap_components==1.1.0
+dash_daq==0.5.0
+dash_player==1.0.6
+diskcache==5.4.0
+numpy==1.23.4
+opencv_python==4.7.0.68
+pandas==1.5.1
+plotly==5.11.0
+PyYAML==6.0
+sagemaker==2.121.2
+scikit_learn==1.2.0
+tensorboard==2.10.1
+tensorflow==2.10.0
