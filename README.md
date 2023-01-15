@@ -28,4 +28,4 @@ Nous cherchons à réaliser un algorithme de classification sur ces différentes
 
 ## Modèle de Deep Learning utilisé
 
-Pour ce projet, nous utiliserons 
+Pour ce projet, nous utiliserons le modèle Xception
