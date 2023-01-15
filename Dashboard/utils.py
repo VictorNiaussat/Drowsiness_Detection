@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import boto3
 import plotly.graph_objects as go
 import plotly.express as px
 from sklearn.metrics import roc_curve, confusion_matrix
@@ -18,7 +17,6 @@ sys.path.append('./')
 from SageMaker.Model_Xception.modelClass import model
 from sklearn.preprocessing import LabelBinarizer
 import plotly.figure_factory as ff
-from ast import literal_eval
 import glob
 import cv2
 from datetime import timedelta
@@ -38,22 +36,6 @@ activity_map = {
         }
 app_color = {"graph_bg": "#082255", "graph_line": "#007ACE"}
 
-def new_connection(type, region):
-    if type=='all':
-        client = boto3.client('s3', region_name=region)
-        sm_client = boto3.client('sagemaker', region_name=region)
-        session = boto3.Session(region_name=region)
-        s3_res = session.resource('s3', region_name=region)
-        account = boto3.client("sts", region_name=region).get_caller_identity().get("Account")
-        return client, session, sm_client, s3_res, account
-    elif type=='sagemaker':
-        sm_client = boto3.client('sagemaker', region_name=region)
-        return sm_client
-    elif type=='s3':
-        client = boto3.client('s3', region_name=region)
-        session = boto3.Session(region_name=region)
-        s3_res = session.resource('s3', region_name=region)
-        return client, s3_res
 
 
 def logs_tensorboard_to_dataframe(experiment_id:str):
