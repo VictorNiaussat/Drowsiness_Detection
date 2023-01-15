@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 import tensorboard as tb
 import yaml
+from yaml.loader import SafeLoader
 import sys
 sys.path.append('./')
 from SageMaker.Model_Xception.modelClass import model
@@ -116,7 +117,7 @@ def make_predictions(model_path:str, specs:dict, generator=None):
         for img, timestamp in generator:
             preds.append(np.argmax(m.predict(img.reshape(1,224,224,3), verbose=0)))
             times.append(timestamp)
-        T_max = 60 * times[-1].minute<+ times[-1].time().second
+        T_max = 60 * times[-1].minute + times[-1].time().second
         N = len(times) #n_b mesures classes
         T = np.linspace(0,T_max,N)
 
@@ -142,7 +143,7 @@ def load_tensoboard_data(model_path:str):
         pd.DataFrame: DataFrame des données.
     """
     with open(os.path.join(model_path, 'config.yaml')) as f:
-        config = yaml.load(f)
+        config = yaml.load(f, Loader=SafeLoader)
 
     df_tensorboard = logs_tensorboard_to_dataframe(config['tensoboard-dev-id'])
     return df_tensorboard

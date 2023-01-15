@@ -11,28 +11,40 @@ import plotly.express as px
 import pandas as pd
 from utils import *
 from dash_player import DashPlayer
+from flask import Flask, Response
+
 
 app = Dash(
     __name__,
     meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
     assets_folder ="static",
-    assets_url_path="static"
 )
+
 app.title = "Dashboard Drowsiness"
 application = app.server
 app_color = {"graph_bg": "#082255", "graph_line": "#007ACE"}
 
+class VideoCamera(object):
+    def __init__(self):
+        self.video = cv2.VideoCapture(0)
 
-#----------------------------S3 Data----------------------------------#
+    def __del__(self):
+        self.video.release()
 
-region = "eu-west-1"
-prefix = "data"
-role = "arn:aws:iam::469563492837:role/service-role/AmazonSageMaker-ExecutionRole-20211008T144923"
-bucket_name = 'drowsiness-detection-bucket'
+    def get_frame(self):
+        success, image = self.video.read()
+        ret, jpeg = cv2.imencode('.jpg', image)
+        return jpeg.tobytes()
+
+    def get_frame_pred(self):
+        success, image = self.video.read()
+        return cv2.resize(cv2.cvtColor(image, cv2.COLOR_RGB2GRAY),(224,224))
+#----------------------------Utils----------------------------------#
+
 colors_list = px.colors.qualitative.Bold + px.colors.qualitative.Antique
-
-
-    
+specs = dict(input_size=224, nb_couches_rentrainement=4, nb_classes=10) 
+m = m = load_model(os.path.join(os.getcwd(), 'Training', 'xception', 'xception-model-2'), specs)
+ 
 
 #------------ Dashboard -----------#
 
@@ -256,7 +268,12 @@ def build_tab_2(list_video):
                 html.Div(
                     [
                         html.Div(id='video-loader',
-                            children=[html.H6("VIDEO", className="graph__title")]
+                            children=[html.H6("VIDEO", className="graph__title"),
+                                        DashPlayer(id='video-analyse-loc',
+                                                    height=720,
+                                                    width=1280,
+                                                    controls=True,
+                                                    style = dict(display='flex', justifyContent='center'))]
                         )
                     ],
                     className="two-third column wind__speed__container first",
@@ -305,7 +322,89 @@ def build_tab_2(list_video):
         )], className="app__container")]
 
 def build_tab_3():
-    pass
+    fig_score = generate_graph_empty()
+    return [html.Div(
+            [   html.Div([html.Div(
+                    [
+                        html.Div(
+                            [html.H6("ANALYSE MODELE", className="graph__title")]
+                        ),
+                        html.P(),
+                        html.Div(   
+                            [       html.Div([html.Label(id="interval-name-select", children="Intervale :",style={"display":"block","textAlign":"right"})],className="two columns"),
+                                    html.Div([dcc.Input(
+                                        id="interval-real-time-select-input",
+                                        type='number',
+                                        placeholder="",
+                                        style=dict(display='flex', justifyContent='center')
+                                    )],className="two columns"),
+                                    html.Div([dbc.Button(
+                                        "START", id="video-predict-real-time-set-btn", n_clicks=0
+                                    )],className="one columns"),
+                                    html.Div([], className="four columns")
+                            ], className="twelve columns"
+                        ),
+                        html.P()
+                    ],
+                    className="full column wind__speed__container first",
+                )],className='app__content first'),
+                ## A partir de là
+                
+        html.Div(
+            [
+                # wind speed
+                html.Div(
+                    [
+                        html.Div(id='video-loader-real-time',
+                            children=[html.H6("VIDEO", className="graph__title"),
+                                      html.Img(id='camera-video', src="/video_feed", style=dict(display='flex', justifyContent='center'))]
+                        )
+                    ],
+                    className="two-third column wind__speed__container first",
+                ),
+                html.Div(
+                    [
+                        # histogram
+                        html.Div(
+                            [   html.Div(),
+                                html.P("SCORE ACTUEL", style=dict(display='flex', justifyContent='center')),
+                                dcc.Interval(id='video-analyse-real-time-interval', interval=200, n_intervals=-1, disabled=True),
+                                daq.LEDDisplay(
+                                    id="current-score-led-real-time",
+                                    value="0.0",
+                                    color=list(app_color.values())[1],
+                                    backgroundColor=list(app_color.values())[0],
+                                    style={"border": 0, 'display':'flex', 'justifyContent':'center'},
+                                    size=100,
+                                ),
+                                html.Label('0: meilleur score, 1: pire score', style=dict(display='flex', justifyContent='center'))
+                            ],
+                            className="graph__container first",
+                        )
+                    ],
+                    className="one-third column histogram__direction",
+                ),
+            ],
+            className="app__content first",
+        ),
+        html.Div(
+            [
+                # wind speed
+                html.Div(
+                    [
+                        html.Div(
+                            [html.H6("EVOLUTION DU SCORE", className="graph__title")]
+                        ),
+                        dcc.Graph(
+                                    id="score-analyse-video-real-time", figure=fig_score
+                                        )
+                    ],
+                    className="full column wind__speed__container first",
+                )
+            ],
+            className="app__content first",
+        )], className="app__container")]
+
 
 
 layout = html.Div(
@@ -321,7 +420,9 @@ layout = html.Div(
             ],
         ),
         dcc.Store(id='specs',data=dict()),
-        dcc.Store(id='df-analyse-video', data=dict())
+        dcc.Store(id='df-analyse-video', data=dict()),
+        dcc.Store(id='df-analyse-video-real-time', data=dict()),
+        dcc.Store(id='score-real-time')
     ],
 )
 app.layout = layout
@@ -398,6 +499,8 @@ def update_video_analyse_current_score(n_intervals, df_score, current_time):
         return np.round(score, 2)
 
 
+
+    
 @app.callback(
     [Output("score-analyse-video", "figure"),
     Output('video-loader', 'children'),
@@ -431,7 +534,61 @@ def generate_video_analyse(n_clicks, model_path, video_name, interval):
 
         return fig_score, children, df_score.to_dict(), False
 
+@app.callback(
+    [Output('current-score-led-real-time', 'value'),
+    Output('df-analyse-video-real-time', 'data'),
+    Output('score-analyse-video-real-time', 'figure'),
+    Output('score-real-time', 'data')],
+    Inp("video-analyse-real-time-interval", "n_intervals"),
+    [State('df-analyse-video-real-time', 'data')]
+)
+def do_real_time_analyse(n_intervals, score_data):
+    """
+    image = None
+    pred = m.predict(np.array([image]))[0]
 
+    df = pd.DataFrame.from_dict(score_data)
+    alpha = 10 #Exigence 
+    score_map = 1/10*alpha*np.array([-2,5,7,5,7,1,3,6,6,5])
+
+    penalite = score_map[pred]
+    current_time=pd.Timestamp.now()
+    if score_data==dict():
+        score = penalite
+        df = pd.DataFrame(t=[0], score = [score], index=[current_time])
+    else:
+        score = len(df)*df.score.iloc[-1] + penalite
+        df[current_time] = [int((current_time - df.index.iloc[0]).total_seconds()) , score]
+    fig_score = generate_graph_score(df)
+    return round(score,2), df.to_dict(), fig_score, score"""
+    return "0.0", dict(), generate_graph_empty(), 0
+
+@app.callback(
+    [Output("video-analyse-real-time-interval", "disabled"),
+    Output("video-analyse-real-time-interval", "interval")],
+    Inp("video-predict-real-time-set-btn", "n_clicks"),
+    [State('interval-real-time-select-input', 'value')]
+)
+def real_time_analysis_on(n_clicks, interval):
+    if n_clicks==0:
+        raise PreventUpdate
+    else:
+        return False, interval*1000
+
+
+
+
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+
+@application.route('/video_feed')
+def video_feed():
+    return Response(gen(VideoCamera()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__=='__main__':
     app.run_server(debug=True)
