@@ -275,7 +275,8 @@ def build_tab_2(list_video):
                                     backgroundColor=list(app_color.values())[0],
                                     style={"border": 0, 'display':'flex', 'justifyContent':'center'},
                                     size=100,
-                                )
+                                ),
+                                html.Label('0: meilleur score, 1: pire score', style=dict(display='flex', justifyContent='center'))
                             ],
                             className="graph__container first",
                         )
