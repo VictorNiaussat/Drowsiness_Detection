@@ -54,7 +54,12 @@ def build_banner():
                     [
                         html.H4("Dashboard Drowsiness Detection", className="app__header__title"),
                         html.P(
-                            "Ce dashboard permet lbla-bla-bla", #A modifier
+                            """Ce dashboard regroupe l'ensemble du projet en Deep Learning sur la détection de distraction au volant
+                                 au sein du parcours SDI de Centrale Lille. Il regroupe trois parties, la première analyse les performances d'un modèle entrainé en utilisant 
+                                 les données de validation. Le deuxième analyse une vidéo pour un intervalle de temps donné, et renvoie l'évolution d'un score de conduite 
+                                 en fonction du temps. A la lecture de la vidéo, le score actuel est affiché ainsi que la distraction détectée lorsqu'il y en a une.
+                                 La dernière partie est sensiblement la même que la deuxième si ce n'est qu'on utilise directement la webcam de l'ordinateur pour 
+                                 analyser la conduite en temps réel.""",
                             className="app__header__title--grey",
                         ),
                     ],
@@ -293,6 +298,7 @@ def build_tab_2(list_video):
                                     style={"border": 0, 'display':'flex', 'justifyContent':'center'},
                                     size=100,
                                 ),
+                                html.Label(id='score-video-label', children = "", style=dict(display='flex', justifyContent='center')),
                                 html.Label('0: meilleur score, 1: pire score', style=dict(display='flex', justifyContent='center'))
                             ],
                             className="graph__container first",
@@ -377,6 +383,7 @@ def build_tab_3():
                                     style={"border": 0, 'display':'flex', 'justifyContent':'center'},
                                     size=100,
                                 ),
+                                html.Label(id='score-video-label', children="", style=dict(display='flex', justifyContent='center')),
                                 html.Label('0: meilleur score, 1: pire score', style=dict(display='flex', justifyContent='center'))
                             ],
                             className="graph__container first",
@@ -479,24 +486,26 @@ def update_graph_analyse_model(n_clicks, model_name, input_size):
 
 
 @app.callback(
-    Output('current-score-led', 'value'),
+    [Output('current-score-led', 'value'),
+     Output('score-video-label', 'children')],
     Inp("video-analyse-interval", "n_intervals"),
     [State('df-analyse-video', 'data'),
     State('video-analyse-loc', "currentTime")]
 )
 def update_video_analyse_current_score(n_intervals, df_score, current_time):
     if df_score == dict():
-        return "0.0"
+        return "0.0", ""
     else:
         df_score = pd.DataFrame.from_dict(df_score)
-        current_score = df_score[df_score.t<=int(current_time)].score.iloc[-1]
-        current_t = df_score[df_score.t<=int(current_time)].t.iloc[-1]
-        next_score = df_score[df_score.t>int(current_time)].score.iloc[0]
-        next_t = df_score[df_score.t>int(current_time)].t.iloc[0]
+        current_score = df_score[df_score.time<=int(current_time)].score.iloc[-1]
+        label = df_score[df_score.time<=int(current_time)].distraction.iloc[-1]
+        current_t = df_score[df_score.time<=int(current_time)].time.iloc[-1]
+        next_score = df_score[df_score.time>int(current_time)].score.iloc[0]
+        next_t = df_score[df_score.time>int(current_time)].time.iloc[0]
         m = (next_score - current_score)/(next_t-current_t)
         b = current_score - m*current_t
         score =m*current_time + b
-        return np.round(score, 2)
+        return np.round(score, 2), label
 
 
 
@@ -591,4 +600,4 @@ def video_feed():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__=='__main__':
-    app.run_server(debug=True)
+    app.run_server()

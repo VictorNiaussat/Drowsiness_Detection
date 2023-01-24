@@ -120,17 +120,17 @@ def make_predictions(model_path:str, specs:dict, generator=None):
         T_max = 60 * times[-1].minute + times[-1].time().second
         N = len(times) #n_b mesures classes
         T = np.linspace(0,T_max,N)
-
         alpha = 10 #Exigence 
-        score_map = 1/10*alpha*np.array([-2,5,7,5,7,1,3,6,6,5])
-
-        penalite = score_map[preds]
         Score = np.zeros(N)
+        Score[0] = max(compute_score(time=60 * times[0].minute + times[0].time().second,id_distraction=int(preds[0])),0)
         for i in range(1,N):
-            Score[i] = max(min((i*Score[i-1]+penalite[i])/(i+1),1),0)
-        df = pd.DataFrame(dict(score=Score), index=[t.to_datetime64()for t in times])
-        df['t']= [0] + [int((df.index.tolist()[i] - df.index.tolist()[0]).total_seconds()) for i in range(1, len(df))]
+            time_lapse = 60*(times[i].minute - times[i-1].minute) + (times[i].time().second - times[i-1].time().second)
+            Score[i] = max(min(Score[i-1]+compute_score(time = time_lapse ,id_distraction=int(preds[i])), 1),0)
+        df = pd.DataFrame(dict(score=Score, distraction = [list(activity_map.values())[p] for p in preds]), index=[t.to_datetime64()for t in times])
+        df['time']= [0] + [int((df.index.tolist()[i] - df.index.tolist()[0]).total_seconds()) for i in range(1, len(df))]
+        df.reset_index(inplace=True)
         return df
+
 
 
 def load_tensoboard_data(model_path:str):
@@ -147,6 +147,7 @@ def load_tensoboard_data(model_path:str):
 
     df_tensorboard = logs_tensorboard_to_dataframe(config['tensoboard-dev-id'])
     return df_tensorboard
+
 
 def load_video_path():
     path = os.path.join(os.getcwd(), 'Data','*.MP4')
@@ -263,8 +264,8 @@ def generate_graph_score(df_score:pd.DataFrame):
                 font_color="white",
             )
     colors = [app_color["graph_line"], "#EBF5FA", "#2E5266", "#BD9391"]
-    df_score.reset_index(inplace=True)
-    fig = px.line(df_score, y= 'score', x='t', color_discrete_sequence=colors)
+    fig = px.line(df_score, x="time", y="score", text="distraction", color_discrete_sequence=colors)
+    fig.update_traces(textposition="bottom right")
     fig.update_layout(layout)
     return fig
 
@@ -289,3 +290,30 @@ def generator_from_video(video_path, interval):
         sec = i*interval  # nombre de secondes écoulées à cette frame
 
         yield np.stack((image,)*3, axis=-1), pd.to_datetime('00:00:00')+timedelta(seconds=sec)
+
+
+def associate_id_to_distraction(input_data):
+    """
+    Args:
+        input_data (array-like) or (int): indices des distractions considérées
+    Returns: (array de string) ou (string) des distractions
+    Raise : Type error si input_data n'est pas de type array ou int
+    """
+    if type(input_data)==int:
+        return activity_map[id]
+    else :
+        N=len(input_data)
+        result = [0 for _ in range(N)]
+        for i in range(N):
+            result[i]=activity_map[input_data[i]]
+        return result
+
+
+def compute_score(time,id_distraction,alpha=0.0001,beta=0.0001):
+    assert time>=0 , f"le temps donnée doit être positif  : {time}"
+    assert id_distraction>=0.0 and id_distraction<=9.0 , f"Le type de distraction doit être un entier entre 0 et 9 : {id_distraction}"
+    if id_distraction==0:
+        return - np.exp(+beta*time)
+    else:
+        return + np.exp(+alpha*time)
+
