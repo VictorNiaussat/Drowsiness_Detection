@@ -279,17 +279,16 @@ def generator_from_video(video_path, interval):
 
     n_frames= int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     n_fps = int(cap.get(cv2.CAP_PROP_FPS))
-    print(video_path)
     for i in range(int(n_frames//(n_fps*interval))):
 
         cap.set(cv2.CAP_PROP_POS_FRAMES, i*n_fps*interval)
         ret,img=cap.read()
-        image = cv2.resize(cv2.cvtColor(img[: 960:-1], cv2.COLOR_RGB2GRAY),(224,224))
+        image = cv2.resize(img[260:, 800:-300],(224,224))
         if ret==False:
             break
         sec = i*interval  # nombre de secondes écoulées à cette frame
 
-        yield np.stack((image,)*3, axis=-1), pd.to_datetime('00:00:00')+timedelta(seconds=sec)
+        yield image, pd.to_datetime('00:00:00')+timedelta(seconds=sec)
 
 
 def associate_id_to_distraction(input_data):
