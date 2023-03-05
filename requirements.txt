@@ -1,0 +1,12 @@
+dash
+dash_bootstrap_components
+dash_daq
+dash_player
+diskcache
+numpy
+opencv_python
+pandas
+plotly
+PyYAML
+sagemaker
+scikit_learn

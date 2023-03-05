@@ -11,3 +11,4 @@ SageMaker/run_training/create_job_sm_ubuntu.py
 Data/
 Training
 Dashboard/static/Right_side_window_User_id_24026_NoAudio_3.MP4
+Dashboard/.cache/
